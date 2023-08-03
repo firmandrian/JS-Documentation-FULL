@@ -1,0 +1,71 @@
+describe("postData", () => {
+  test("Uji coba postData dengan status 200", async () => {
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    const req = {
+      body: {
+        karyawan: "durhana",
+        insentif: "21312",
+        jumlah: "500",
+      },
+    };
+    await postData(req, res);
+
+    setTimeout(() => {
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Post all user succes",
+        data: req.body,
+      });
+    }, 200);
+  });
+});
+
+
+describe("Unit test for DELETE /data", () => {
+  test("Unit test for deleteData with statusCode 200", async () => {
+    // Menambahkan data yang akan dihapus ke dalam data.json sebelum pengujian
+    const newData = data.tb_karyawan.filter((item) => item.id !== "48");
+    data.tb_karyawan = newData;
+    fs.writeFileSync("./data.json", JSON.stringify(data, null, 2));
+
+    // Menghapus data dengan ID 48 melalui permintaan HTTP DELETE
+    const response = await request(app).delete("/deleteData/48");
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.message).toBe("Data dengan ID 48 berhasil dihapus");
+
+    // Memastikan data telah dihapus dari data.json
+    const updatedData = fs.readFileSync("./data.json", "utf8");
+    const jsonData = JSON.parse(updatedData);
+    expect(jsonData.tb_karyawan.length).toBe(0);
+  });
+
+  test("Unit test for deleteData with statusCode 404", async () => {
+    // Menghapus data yang tidak ada dalam data.json
+    const response = await request(app).delete("/deleteData/49");
+
+    expect(response.statusCode).toBe(404);
+    expect(response.body.message).toBe("Data dengan ID 49 tidak ditemukan");
+  });
+});
+
+			(Integration Test connection database)
+getData(D)
+postData(D)
+deleteData (D)
+editData (D)
+search(D)
+regis (D)
+home (D)
+(login) (D) dengan catatan karna login menggunakan token yang berbeda beda, maka hasilnya tidak sempurna dan hasil dari fungsi unit test nya sudah berhasil
+
+			(Integration Test with mockUp data)
+
+getData(D)
+postData(D)
+deleteData(D)
+editData(D)
+

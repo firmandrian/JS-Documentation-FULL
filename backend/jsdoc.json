@@ -1,0 +1,17 @@
+{
+    "source": {
+      "include": ["controllers", "chat"],
+      "includePattern": ".js$",
+      "excludePattern": "(node_modules/|docs)"
+    },
+    "plugins": ["plugins/markdown"],
+    "templates": {
+        "cleaverLinks": true,
+        "monospaceLinks": true
+    },
+    "opts": {
+      "destination": "./docs/",
+      "recurse": true
+    }
+  }
+  

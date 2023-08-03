@@ -1,0 +1,84 @@
+import React, { useEffect, useState } from "react";
+import ScrollToBottom from "react-scroll-to-bottom";
+import { BsBoxArrowRight } from "react-icons/bs";
+import { useCookies } from "react-cookie";
+
+export default function State({ socket, username, room }) {
+  // console.log(socket, username, room);
+  const [currentMessage, setCurrentMessage] = useState("");
+  const [messageList, setMessageList] = useState([]);
+  const [cookie] = useCookies(["token"])
+
+  const sendMessage = async () => {
+
+    if (currentMessage !== "") {
+      const messageData = {
+        room: room,
+        author: username,
+        message: currentMessage,
+        time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes(),
+      };
+      await socket.emit("send_message", messageData, cookie.token);
+      // console.log(messageData, cookie.token, "haha");
+      setMessageList((list) => [...list, messageData]);
+      setCurrentMessage("");
+    }
+  };
+
+  useEffect(() => {
+    socket.on("receive_message", (data) => {
+      setMessageList((list) => [...list, data]);
+    });
+  }, [socket]);
+
+  const logout = () => {
+    const confirm = window.confirm("Apakah anda yakin ingin keluar?");
+    if (confirm) {
+      document.location.replace("/home");
+    }
+  };
+
+  return (
+    <div className="chat-window">
+      <div className="chat-header">
+        <p>Live Chat</p>
+        <div className="logout-icon" style={{ fontSize: "14px", cursor: "pointer" }} onClick={logout}>
+          <BsBoxArrowRight style={{ textDecoration: "none", color: "black", marginTop: "-1px" }} /> Log Out
+        </div>
+      </div>
+      <div className="chat-body">
+        <ScrollToBottom className="message-container">
+          {messageList.map((messageContent) => {
+            return (
+              <div className="message" id={username === messageContent.author ? "you" : "other"}>
+                <div>
+                  <div className="message-content">
+                    <p>{messageContent.message}</p>
+                  </div>
+                  <div className="message-meta">
+                    <p id="time">{messageContent.time}</p>
+                    <p id="author">{messageContent.author}</p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </ScrollToBottom>
+      </div>
+      <div className="chat-footer">
+        <input
+          type="text"
+          value={currentMessage}
+          placeholder="Type a message"
+          onChange={(event) => {
+            setCurrentMessage(event.target.value);
+          }}
+          onKeyPress={(event) => {
+            event.key === "Enter" && sendMessage();
+          }}
+        />
+        <button onClick={sendMessage}>&#9658;</button>
+      </div>
+    </div>
+  );
+}
