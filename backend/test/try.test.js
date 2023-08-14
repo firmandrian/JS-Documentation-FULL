@@ -1,16 +1,17 @@
 import request from "supertest";
-import {
-  postData,
-  getData,
-  logout,
-  deleteData,
-  editData,
-  search,
-  home,
-} from "../controllers/users.js";
-import { login } from "../controllers/login.js";
-import { register } from "../controllers/regis.js";
-import router from "../routes/dataRoutes.js";
+import { postData } from "../controllers/postDataRoutes";
+// import {
+//   postData,
+//   getData,
+//   logout,
+//   deleteData,
+//   editData,
+//   search,
+//   home,
+// } from "../controllers/users.js";
+// import { login } from "../controllers/login.js";
+// import { register } from "../controllers/regis.js";
+// import router from "../routes/dataRoutes.js";
 
 // fungsi describe adalah untuk mengelompokan serangkaian tes terkait
 describe("postData", () => {

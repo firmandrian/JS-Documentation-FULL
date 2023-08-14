@@ -9,19 +9,20 @@ import koneksiDB from "../src/config/db.js";
  * @param {object} res - Objek respons HTTP.
  * @returns {void}
 */
-//fungsi untuk mengedit data dari database
+//function for edit data from database
 export const editData = (req, res) => {
-    const id = req.params.id;
-    const karyawan = req.body.karyawan;
-    const insentif = req.body.insentif;
-    const jumlah = req.body.jumlah;
+    const id          = req.params.id;
+    const karyawan    = req.body.karyawan;
+    const insentif    = req.body.insentif;
+    const jumlah      = req.body.jumlah;
     /*
-    lakukan validasi jika user tidak menginput form, maka tidak masuk ke DB
+     * validate if the user does not input the form, 
+     * then it will not entered the DB
     */
     if (!karyawan || !insentif || !jumlah) {
       return res.status(400).json({ message: "Data tidak boleh kosong" });
     }
-    //jika tidak, maka simpan ke DB
+    // if not, then save to the DB
     koneksiDB.query(
       "CALL EditData(?, ?, ?, ?)",
       [id, karyawan, insentif, jumlah],
