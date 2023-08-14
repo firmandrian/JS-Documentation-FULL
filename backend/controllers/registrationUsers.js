@@ -17,15 +17,15 @@ import bcrypt from "bcrypt";
 //fungsi saltround digunakan untuk mengatur kompleksitas dan kekuatan enkripsi hash yang dilakukan,
 //semakin banyak value nya semakin banyak proses enkripsi nya
 
-
+//function registration account user
 export const register = (req, res) => {
-  const saltRounds = 10;
-  const nama = req.body.nama;
-  const username = req.body.username;
-  const email = req.body.email;
-  const password = req.body.password;
+  const saltRounds      = 10;
+  const nama            = req.body.nama;
+  const username        = req.body.username;
+  const email           = req.body.email;
+  const password        = req.body.password;
 
-  //validasi user input
+  //validation user input
   if (nama.length < 5) {
     return res.status(400).send("Mohon masukkan nama minimal 5 karakter");
   }
@@ -36,13 +36,14 @@ export const register = (req, res) => {
     return res.status(400).send("Password minimal harus 8 karakter");
   }
 
+  //bcrypt password account user
   bcrypt.genSalt(saltRounds, (err, salt) => {
     bcrypt.hash(password, salt, (err, hash) => {
       if (err) {
         console.log(err);
         res.status(500).send("Error registering user");
       } else {
-        // Memanggil stored procedure RegisterUser
+        // save account data user into database
         koneksiDB.query(
           "CALL RegisterUser(?, ?, ?, ?, @registrationStatus)",
           [nama, username, email, hash],

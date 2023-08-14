@@ -9,14 +9,14 @@ import koneksiDB from "../src/config/db.js";
  * @property {string} insentif - insentif
  * @property {number} jumlah - jumlah
 */
-//fungsi untuk menambahkan data baru kedalam database
+// function for add new data into database
 export const postData = (req, res) => {
     /* fungsi body pada dibawah adalah untuk mengakses data yang dikirim dalam body
     dalam permintaan HTTP.
     */
-    const karyawan = req.body.karyawan;
-    const insentif = req.body.insentif;
-    const jumlah = req.body.jumlah;
+    const karyawan    = req.body.karyawan;
+    const insentif    = req.body.insentif;
+    const jumlah      = req.body.jumlah;
   
     //cek apakah data kosong
     if (!karyawan || !insentif || !jumlah) {

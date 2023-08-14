@@ -11,7 +11,7 @@ import jwt from "jsonwebtoken"
  * @type {object}
  */
 
-// Membuat instance Socket.IO dan melekatkannya pada server HTTP
+// create server Socket.IO in server HTTP
 export const configureWebSocket = (server) => {
     const io = new Server(server, {
       cors: {

@@ -4,14 +4,18 @@ import koneksiDB from "../src/config/db.js";
 export function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
-  // const token = req.cookies.token;
 
+  //check token users exist, or not
   if (!token) {
     return res
       .status(401)
       .json({ success: false, message: "Token tidak tersedia" });
   }
 
+  /*
+   * if token invalid or expired,
+   * then jwt will run this program
+   */
   jwt.verify(token, "rahasia", (err, user) => {
     if (err) {
       return res
@@ -21,7 +25,7 @@ export function authenticateToken(req, res, next) {
 
     const userId = user.userId;
     // console.log(userId);
-    // Verifikasi token di database
+    // verification token in database
     koneksiDB.query("CALL verify_token(?)", [userId], (err, result) => {
       if (err) {
         console.log(err);
@@ -30,13 +34,16 @@ export function authenticateToken(req, res, next) {
           .json({ success: false, message: "Error database" });
       }
 
+      /*
+       * verification token, if token not same between the database and the client
+      */
       if (result.length === 0 || result[0][0].token !== token) {
         return res
           .status(401)
           .json({ success: false, message: "Token tidak valid" });
       }
 
-      // Token valid, lanjutkan ke handler berikutnya
+      // token valid, next to the handler
       req.user = user;
       next();
     });

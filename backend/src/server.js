@@ -6,19 +6,23 @@ import session from "express-session";
 import cors from "cors";
 import http from "http";
 import { configureWebSocket } from "../chat/webSocketConfig.js";
-import swaggerUi from "swagger-ui-express"
-import swaggerDocument from "../apiDocs.json" assert {type: "json"}
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "../apiDocs.json" assert {type: "json"};
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
-const port = 4100;
+const port = process.env.config_port;
 
-router.use("/api-docs", swaggerUi.serve);
-router.get("/api-docs", swaggerUi.setup(swaggerDocument));
+//swagger
+router.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(passport.initialize());
-// Middleware untuk mengatur header CORS
+
+// Middleware to set CORS headers
 app.use(
   cors({
     origin: ["http://127.0.0.1:5173", "http://localhost:5173"],
@@ -28,6 +32,7 @@ app.use(
   })
 );
 
+//middleware for manage user sessions
 app.use(
   session({
     secret: "secret-key",
@@ -37,13 +42,18 @@ app.use(
   })
 );
 
-//middleware untuk memanggil semua route HTTP server
+//middleware for call all route HTTP server/ restAPI
 app.use(router);
 
-//membuat server HTTP
+/*
+ * create server HTTP socket.io
+*/
 const server = http.createServer(app);
+
+//configurewebsocket from file websocketConfig.js
 configureWebSocket(server);
 
+//listening HTTP on port 4100
 server.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });

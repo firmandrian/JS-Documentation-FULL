@@ -19,10 +19,12 @@ export const login = (req, res) => {
   const password = req.body.password;
   console.log(req.body);
 
-  //lakukan validasi apakah email atau username ada di DB atau tidak
+  // validate email or username exist in the DB or not
   koneksiDB.query("CALL sp_getUser(?)", [usernameOrEmail], (err, result) => {
     console.log(result);
     // const type = result[0].type;
+
+    //error response
     if (err) {
       console.log(err);
       return res.status(500).json({ success: false, message: "Error login" });
@@ -30,6 +32,8 @@ export const login = (req, res) => {
     // if (type === "facebook") {
     //   return res.status(400).json({ status: false, message: "Registrasi terlebih dahulu" });
     // }
+
+    //error response, if email or username not found in Database
     if (result.length === 0) {
       return res.status(401).json({
         success: false,
@@ -40,10 +44,11 @@ export const login = (req, res) => {
     const user = JSON.parse(JSON.stringify(result[0][0]));
     console.log(user);
     const hashedPassword = user.password;
+
     /*
-        jika email atau username ada di database,
-        maka bandingkan password yang user input dengan di DB
-        */
+      * if email or username exist in database,
+      * then compare user input password with password in database
+    */
     bcrypt.compare(password, hashedPassword, (err, match) => {
       // console.log(match);
       if (err) {
@@ -51,11 +56,11 @@ export const login = (req, res) => {
         return res.status(500).json({ success: false, message: "Error login" });
       }
       /*
-          jika berhasil masuk, maka ambil parameter match yang bernilai true
-          dan buatkan token JWT
-          */
+        * if login success, then take match parameter, 
+        * and create token JWT
+      */
       if (match) {
-        // Membuat token JWT
+        // create token JWT
         const token = jwt.sign(
           { userId: user.id, username: user.username, email: user.email },
           "rahasia",
@@ -65,7 +70,7 @@ export const login = (req, res) => {
         );
         console.log(`ini adalah token ${token}`);
 
-        //simpan token di DB
+        // save token JWT in database
         koneksiDB.query(
           "CALL updateTokenProcedure(?, ?)",
           [token, user.id],
@@ -76,17 +81,20 @@ export const login = (req, res) => {
                 .status(500)
                 .json({ success: false, message: "Error login" });
             }
-            //simpan token JWT di cookies browser
+            // save token JWT in cookies browser too
             res.cookie("token", token, {
               httpOnly: false,
               expiresIn: "1d",
             });
 
+            //response success
             return res
               .status(200)
               .json({ success: true, message: "Login berhasil.", token });
           }
         );
+
+        // error response 
       } else {
         return res
           .status(401)

@@ -11,14 +11,16 @@ import koneksiDB from "../src/config/db.js";
  * @returns {void} 
 */
 
-//fungsi untuk menampilkan data dari database ke halaman web browser
+//function to display data from database to web browser page / client side
 export const getData = (req, res) => {
+  //get data from database
   koneksiDB.query("CALL GetData()", (err, result) => {
     if (err) {
       res.status(500).json({
         message: "Data eror saat diambil dari DB",
         error: err,
       });
+    //error response
     } else {
       res.status(200).json({
         message: "Data berhasil diambil dari DB",
@@ -28,7 +30,7 @@ export const getData = (req, res) => {
   });
 };
 
-// untuk menu home
+// for menu home
 export const home = (req, res) => {
     res.status(200).json({ success: true, message: "Halaman Home" });
 };
@@ -39,11 +41,11 @@ export const home = (req, res) => {
  * @param {object} res - Objek respons HTTP.
  * @returns {void}
 */
-//fungsi untuk mencari data di database
+//function for search data in database
 export const search = (req, res) => {
     const search = req.query.karyawan;
   
-    // Panggil stored procedure searchKaryawan
+    // search data employee into database 
     koneksiDB.query("CALL searchKaryawan(?)", [search], (err, result) => {
       if (err) {
         res.status(500).json({
@@ -65,7 +67,7 @@ export const search = (req, res) => {
    * @param {object} res - Objek respons HTTP.
    * @returns {void}
   */
-  //fungsi untuk pagination
+  //function for pagination
   export const pagination = (req, res) => {
     const halaman = parseInt(req.query.halaman) || 1;
     const batas = 10;
@@ -74,6 +76,7 @@ export const search = (req, res) => {
       "CALL GetKaryawanByPage(?, ?, @totalPages)",
       [halaman, batas],
       (err, results) => {
+        // error response
         if (err) {
           console.error(`error saat menggambil data ${err.stack}`);
           return res.status(500).json({ error: "gagal menggambil data" });
@@ -82,6 +85,7 @@ export const search = (req, res) => {
         koneksiDB.query(
           "SELECT @totalPages AS total",
           (err, totalPagesResult) => {
+            // error response
             if (err) {
               console.error(`error saat menggambil data ${err.stack}`);
               return res.status(500).json({ error: "gagal menggambil data" });
@@ -89,7 +93,10 @@ export const search = (req, res) => {
   
             const totalHalaman = totalPagesResult[0].total;
   
-            // Mengirimkan data hasil query dan informasi pagination ke klien
+            /* 
+             * success response.
+             * send result data quary and pagination information to the client.
+            */
             res.json({
               data: results[0],
               halaman: halaman,

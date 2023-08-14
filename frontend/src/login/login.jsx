@@ -15,7 +15,8 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [recaptcha, setRecapcha] = useState(null)
+  const [recaptcha, setRecapcha] = useState(null);
+  const [expired, setExpired] = useState(false);
   
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -28,7 +29,7 @@ export default function Login() {
       )
       return;
     }
-    // Buat objek data dengan email dan password
+    // Api Login User
     const data = { usernameOrEmail, password };
     console.log(data);
     try {
@@ -51,6 +52,7 @@ export default function Login() {
     setShowPassword(!showPassword);
   };
 
+  //Api OAuth Facebook
   const handleFacebookLogin = () => {
     try {
       (window.location.href = "http://localhost:4100/auth/facebook"),
@@ -62,6 +64,7 @@ export default function Login() {
     }
   };
 
+  //Api OAuth Google
   const googleLogin = () => {
     try {
       (window.location.href = "http://localhost:4100/auth/google"),
@@ -72,6 +75,20 @@ export default function Login() {
       console.log(error);
     }
   };
+
+  //fungsi untuk mengecek jika RECAPTCHA expired
+  const handleRecaptchaExpired = () => {
+    console.log("Captcha Expired");
+    setExpired(true);
+    setRecapcha(null);
+  }
+  useEffect(() => {
+    let timeout;
+    if (expired) {
+      timeout = setTimeout(() => setExpired(false), 6000);
+    }
+    return () => clearTimeout(timeout)
+  }, [expired])
 
   return (
     <Container style={{ fontSize: "15px" }}>
@@ -105,10 +122,7 @@ export default function Login() {
                     console.log('Captcha value:', response);
                     setRecapcha(response)
                   }}
-                  onExpired={() => {
-                    console.log('Captcha expired');
-                    setRecapcha(null)
-                  }}
+                  onExpired={handleRecaptchaExpired}
                 />
             </div>
             <p style={{ fontSize: "13px", marginTop: "20px" }}>

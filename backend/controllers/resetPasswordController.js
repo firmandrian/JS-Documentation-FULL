@@ -1,25 +1,31 @@
 import koneksiDB from "../src/config/db.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
 
+//function for resetPassword Account
 export const resetPassword = (req, res) => {
-    const id = req.params.id
-    const token = req.params.token
-    const newPassword = req.body.newPassword
-    const saltRounds = 10
-  
+    const id            = req.params.id
+    const token         = req.params.token
+    const newPassword   = req.body.newPassword
+    const saltRounds    = 10
+
+    //verify token user
     jwt.verify(token, "secret", (error, decodedToken) => {
       console.log(decodedToken);
       if (error) {
         return res.json({message: "Authenticate Error"})
       } else {
+        //bcrypt the new password account user
         bcrypt.genSalt(saltRounds, (err, salt) => {
           bcrypt.hash(newPassword, salt, (err, hash) => {
             if (err) {
               return res.status(500).json({message: "Internal server error"})
             }
   
-            //ubah password user yang lama menjadi password yang baru
+            /*
+             * change old password user to the new password,
+             * and save the new password user into database
+            */
             koneksiDB.query(
               'CALL sp_updatePassword(?, ?)',
               [id, hash],
