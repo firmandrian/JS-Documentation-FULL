@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import koneksiDB from "../src/config/db.js";
+import koneksiDB from "../connection/db.js";
 
 export function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];

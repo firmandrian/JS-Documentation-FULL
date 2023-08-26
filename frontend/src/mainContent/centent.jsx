@@ -38,6 +38,7 @@ export default function Tabel() {
 
     getData();
   }, [cookies.token]);
+  console.log(data, 'adaw');
 
   //fungsi untuk menghapus data dari server
   const deleteData = async (id) => {

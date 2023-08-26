@@ -1,0 +1,148 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "List API",
+      "description": "API Description",
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:4100"
+      }
+    ],
+    "components": {
+      "securitySchemes": {
+        "bearerAuth": {
+          "type": "apiKey",
+          "name": "Authorization",
+          "in": "header"
+        }
+      }
+    },
+    "paths": {
+      "/": {
+        "get": {
+          "summary": "Mengambil data dari server.",
+          "description": "Endpoint untuk mengambil data dari server.",
+          "responses": {
+            "200": {
+              "description": "Response Success.",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "200 Success": {
+                      "value": {
+                        "headers": {
+                          "status": 200,
+                          "message": "Data berhasil diambil dari DB"
+                        },
+                        "data": {
+                          "id": 44,
+                          "karyawan": "string",
+                          "insentif": "string",
+                          "jumlah": "number"
+                        }
+                      }
+                    },
+                    "500 Internal server error": {
+                      "value":{
+                        "headers": {
+                          "status": 500,
+                          "message": "Data error saat diambil dari DB"
+                        }
+                      }
+                    },
+                    "401 Unauthorized": {
+                      "value": {
+                        "headers": {
+                          "status": 401,
+                          "message": "Token tidak tersedia"
+                        }
+                      }
+                    } 
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "500": {
+              "description": "Internal server eror"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        }
+      },
+      "/search": {
+        "get": {
+            "summary":"Mencari data dari server.",
+            "description": "Endpoint untuk mencari data karyawan.",
+            "parameters": [
+                {
+                    "name": "karyawan",
+                    "in": "quary",
+                    "description":"Data berhasil ditemukan.",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Data berhasil ditemukan.",
+                    "content": {
+                      "application/json":{
+                        "examples":{
+                          "200 Success": {
+                            "value": {
+                              "headers": {
+                                "status": 200,
+                                "message":"Data berhasil diambil dari DB"
+                              },
+                              "data": {
+                                "id": "number",
+                                "insentif":"string",
+                                "jumlah":"number"
+                              }
+                            }
+                          },
+                          "500 Internal server error": {
+                            "value": {
+                              "headers": {
+                                "status": 500,
+                                "message":"Data error saat diambil dari DB"
+                              }
+                            }
+                          },
+                          "401 Unauthorized": {
+                            "value": {
+                              "headers": {
+                                "status": 401,
+                                "message":"Token tidak tersedia"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                },
+                "500": {
+                    "description": "Terjadi kesalahan saat melakukan pencarian"
+                }
+            },
+            "security": [
+              {
+                "bearerAuth": []
+              }
+            ]
+        }
+      }
+    }
+  }
+  

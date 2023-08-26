@@ -1,4 +1,4 @@
-import koneksiDB from "../src/config/db.js";
+import koneksiDB from "../connection/db.js";
 import jwt from "jsonwebtoken";
 
 //function API CALLBACK facebook to login with facebook

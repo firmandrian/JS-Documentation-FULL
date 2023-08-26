@@ -1,0 +1,41 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "List API",
+      "description": "API Description",
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:4100"
+      }
+    ],
+    "paths": {
+        "/deleteData/{id}": {
+            "delete": {
+                "summary": "Menghapus data karyawan dari server.",
+                "description": "Endpoint untuk menghapus data karyawan.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID data yang akan dihapus.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description":"Data berhasil dihapus."
+                    },
+                    "500": {
+                        "description":"Terjadi kesalahan pada server."
+                    }
+                }
+            }
+        }
+    }
+  }
+  

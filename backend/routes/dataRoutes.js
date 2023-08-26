@@ -1,7 +1,7 @@
 import express from "express";
 import { authenticateToken } from "../middleware/authenticateToken.js";
-import facebookPassport from "../passports/facebook.js";
-import googlePassport from "../passports/google.js";
+import facebookPassport from "../configuration/facebook.js";
+import googlePassport from "../configuration/google.js";
 import { login } from "../controllers/loginUserController.js";
 import { register } from "../controllers/registrationUsers.js";
 import { forgotPassword } from "../controllers/forgotPasswordController.js";
@@ -10,13 +10,11 @@ import { getData, home, search, pagination } from "../controllers/getDataRoutes.
 import { postData, logout } from "../controllers/postDataRoutes.js";
 import { editData } from "../controllers/updateDataRoutes.js";
 import { deleteData } from "../controllers/deleteDataRoutes.js";
-import {
-  handleFacebookCallback,
-  handleGoogleCallback,
-} from "../utils/authUtils.js";
+import { handleFacebookCallback } from "../utils/authUtils.js";
+import {handleGoogleCallback } from "../utils/authUtils.js";
 const router = express.Router();
 
-router.get("/", getData);
+router.get("/", authenticateToken , getData);
 router.post("/addData", postData);
 router.delete("/deleteData/:id", deleteData);
 router.put("/editContact/:id", editData);
