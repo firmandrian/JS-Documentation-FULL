@@ -36,7 +36,7 @@ export default function Navbars() {
 
     const date = new Date();
     const year = date.getFullYear();
-    const month = date.getMonth();
+    // const month = date.getMonth();
     const day = date.getDate();
     const options = { month: "long" };
     const monthName = new Intl.DateTimeFormat("en-US", options).format(date);

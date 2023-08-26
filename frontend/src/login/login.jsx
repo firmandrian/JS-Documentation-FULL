@@ -44,7 +44,7 @@ export default function Login() {
       }
     } catch (error) {
       console.log(error);
-      alert("Username atau Password Salah");
+      alert("Username or Password invalid");
     }
   };
 

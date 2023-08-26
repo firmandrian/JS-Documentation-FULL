@@ -7,7 +7,7 @@ import cors from "cors";
 import http from "http";
 import { configureWebSocket } from "../chat/webSocketConfig.js";
 import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "../apiDocs.json" assert {type: "json"};
+import { mergedSwaggerDocument } from "../configuration/swagger.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -16,7 +16,11 @@ const app = express();
 const port = process.env.config_port;
 
 //swagger
-router.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+router.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(mergedSwaggerDocument)
+);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -47,7 +51,7 @@ app.use(router);
 
 /*
  * create server HTTP socket.io
-*/
+ */
 const server = http.createServer(app);
 
 //configurewebsocket from file websocketConfig.js

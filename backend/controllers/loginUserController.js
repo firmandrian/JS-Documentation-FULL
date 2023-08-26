@@ -1,4 +1,4 @@
-import koneksiDB from "../src/config/db.js";
+import koneksiDB from "../connection/db.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
@@ -37,7 +37,7 @@ export const login = (req, res) => {
     if (result.length === 0) {
       return res.status(401).json({
         success: false,
-        message: "Email atau Username tidak ditemukan.",
+        message: "Email or Username not found.",
       });
     }
 
@@ -46,9 +46,9 @@ export const login = (req, res) => {
     const hashedPassword = user.password;
 
     /*
-      * if email or username exist in database,
-      * then compare user input password with password in database
-    */
+     * if email or username exist in database,
+     * then compare user input password with password in database
+     */
     bcrypt.compare(password, hashedPassword, (err, match) => {
       // console.log(match);
       if (err) {
@@ -56,9 +56,9 @@ export const login = (req, res) => {
         return res.status(500).json({ success: false, message: "Error login" });
       }
       /*
-        * if login success, then take match parameter, 
-        * and create token JWT
-      */
+       * if login success, then take match parameter,
+       * and create token JWT
+       */
       if (match) {
         // create token JWT
         const token = jwt.sign(
@@ -90,15 +90,15 @@ export const login = (req, res) => {
             //response success
             return res
               .status(200)
-              .json({ success: true, message: "Login berhasil.", token });
+              .json({ success: true, message: "Login success.", token });
           }
         );
 
-        // error response 
+        // error response
       } else {
         return res
           .status(401)
-          .json({ success: false, message: "Password tidak valid." });
+          .json({ success: false, message: "Invalid password." });
       }
     });
   });

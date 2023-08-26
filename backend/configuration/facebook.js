@@ -1,7 +1,7 @@
 import passport from "passport";
-import koneksiDB from "../src/config/db.js";
+import koneksiDB from "../connection/db.js";
 import bcrypt from "bcrypt";
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 import { Strategy as FacebookStrategy } from "passport-facebook";
 
 dotenv.config();
